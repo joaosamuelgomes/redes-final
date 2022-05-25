@@ -1,0 +1,61 @@
+body {
+    background-image: url(/src/images/database.jfif);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 90vh;
+}
+
+
+.conteudo {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.itensConteudo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+    height: 45%;
+    margin-top: 12%;
+    background-color: #ffffff;
+    border-radius: 2rem;
+}
+
+.titulo {
+    /*font-size: 50px;*/
+    font-weight: bold;
+    color: #005a75;
+}
+
+.integrantes {
+    /*font-size: 22px;*/
+    color: #56638A;
+}
+
+.navegador {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    padding: 1rem;
+}
+
+footer {
+    width: 100%;
+    height: 10vh;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #ffffff;
+}
+
+.rodape {
+    display: flex;
+    text-align: center;
+    margin-top: 2vh;
+    flex-direction: column;
+}

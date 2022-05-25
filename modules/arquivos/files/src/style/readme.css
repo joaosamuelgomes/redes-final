@@ -1,0 +1,6 @@
+.navegacao {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
