@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Avaliação 1</title>
+    <style>
+        
+        body {
+            margin: 0px;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: justify;
+            font-size: 25px;
+        }
+
+        .titulo {
+            font-size: 35px;
+        }
+
+        .centered {
+            max-width: 1000px;
+            margin: 0px auto 0px auto;
+            border-right: 1px solid black;
+            border-left: 1px solid black;
+            padding: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="centered">
+      
+
+        <h1 class="titulo">
+            Pre-requisitos para provisionar o servidor samba com vagrant + ansible.
+        </h1>
+        <ol>
+            <li>Insale o vagrant usando o comando "apt install vagrant".</li>
+            <li>Instale o virtualbox usando o comando "apt install virtualbox".</li>
+            <li>Instale o ansible usando o comando "apt install ansible".</li>
+        </ol>
+        </p>
+
+        <h1 class="titulo">
+            Passos para provisionar uma box usando vagrant com ansible
+        </h1>   
+
+        <ol>
+            <li>
+                Crie um vagrant file com as configurações iniciais da box desejada e defina que o provisionamento
+                será feito com o ansible e defina o playbook utilizando o seguinte comando:
+                (box).vm.provision "ansible", playbook: "provisioning/samba.yml"
+            </li>
+            <li>
+                Crie o playbook para ser utilizado na box utilizando a extensão .yml como nos arquivos disponibilziados no github <a href="https://github.com/AntonioCruzCC/RedesAvaliacao2" target="blank">Clique Aqui </a>
+            </li>
+            <li>
+                Levante a box utilizando o comando vagrant up.
+            </li>
+        </ol>
+
+        <h1 class="titulo">
+            Acessando Servidor Samba:
+      </h1>
+            <li>
+            Abra o gerenciado de arquivos e na barra de pesquisa digite: smb://192.168.56.56/samba/
+            </li>
+           
+            <li>
+               Após localizar, será solicitado dados de acesso:
+                Usuário = vagrant e Senha= 123.
+            </li>
+            
+            <figure>
+                <img src="imagens/samba.jpeg">
+            </figure>
+            <p>O diretório Samba é um diretório apenas de leitura, não sendo possível alterar seu conteúdo, pois foi assim configurado no Playbook, porém essa confiração pode ser alterada</p>
+    <br>
+       <p>Além do que foi criado, o servidor Samba pode ser configurado de diversas formas, criando mais diretórios compartilhados e definindo usuários conforme necessidade de acessos </p> 
+       <br> Para mais informações sobre o servidores Samba: <a href="https://www.samba.org/samba/docs/" target="blank">clique aqui </a>
+            <p>OBS: O código fonte deste projeto está comentado, assim poderá ter entendimento do mesmo.</p>
+    </div>
+</body>
+
+</html>
