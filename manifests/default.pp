@@ -25,4 +25,4 @@ include vsftpd
 include squid
 include config
 include reload
-
+include samba
