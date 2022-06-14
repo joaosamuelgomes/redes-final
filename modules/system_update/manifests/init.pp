@@ -1,10 +1,14 @@
 class system_update {
-    exec { 'apt-get update':
-    command => 'apt-get update', # Executa a atualização do sistema
+	
+  # Atualiza a lista das versões dos pacotes disponíveis
+  exec { 'apt-get update':
+    command => 'apt-get update',
   }
-  $sysPackages = [ 'build-essential' ]
+
+  # Carrega uma lista de pacotes necessários para criar um pacote Debian (só roda após o passo acima ser completado)
+  $sysPackages = [ "build-essential" ]
   package { $sysPackages:
-    ensure  => 'installed',
-    require => Exec['apt-get update'], # Instala o pacote build-essential
+    ensure => "installed",
+    require => Exec['apt-get update'],
   }
 }
