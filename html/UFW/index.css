@@ -1,0 +1,76 @@
+body{
+    background-color: #D6EAFF;
+    font-family: 'Segoe UI';
+    margin: 0px;
+    padding: 0px;
+}
+
+.container__centralizado {
+    width: 80%;
+    margin: 20px auto;
+    background-color: white;
+    border-radius: 10px;
+    padding: 5px;
+}
+    
+header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 2% 10%;
+    background-color: white;
+}
+
+li, a, button {
+    font-weight: 500;
+    font-size: 16px;
+    color: black;
+    text-decoration: none;
+}
+
+.header__logo {
+    cursor: pointer;
+    margin-right: auto;
+    font-size: 2rem;
+    font-weight: bolder;
+}
+
+.nav__links li {
+    display: inline-block;
+    padding: 0px 20px;
+}
+
+.nav__links li a {
+    text-decoration: none;
+    color: black;
+    transition: all 0.3s ease 0s;
+    
+}
+
+.nav__links li a:hover {
+    color: #bbb;
+    transition: all 0.3s ease 0s;
+    border-bottom: 1px solid black;
+}
+
+.cta {
+    background-color: #0071EA;
+    padding: 9px 25px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+    margin-left: 35px;
+}
+
+.cta:hover {
+    background-color: navy;
+}
+
+.cta a {
+    color: white;
+}
+
+.ol_passos{
+    margin-bottom: 20px;
+}

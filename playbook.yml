@@ -1,0 +1,207 @@
+---
+- hosts: web          # usa o grupo de hosts/IPs definido pela label "web" no inventory
+  remote_user: root   # estabelece o usuario que vai ser usado na vm como root
+  become: true         # equivalente a usar um "sudo" no shell
+
+  pre_tasks:               # tasks a ser feitas antes do procedimento principal
+  - name: update packages  # "name" define um nome para a tarefa a ser feita (apenas para identificação da tarefa sendo executada)
+    become: true
+    apt:                  # função para a instalação de pacotes
+      update_cache: yes   # atualiza a lista de pacotes
+
+  tasks:
+########################################### Apache e HTML ########################################################################################
+   - name: install apache
+     become: true
+     apt:
+       name: apache2     # nome do pacote a ser instalado
+       state: present    # versão do pacote a ser instalada
+
+   - name: move html
+     copy:                             # função para copiar um diretório ou arquivo da maquina host para a vm
+      src: ./webpage/index.html        # path do arquivo na maquina host
+      dest: /var/www/html/index.html   # destino no arquivo na vm
+
+   - name: move css
+     copy:
+      src: ./webpage/index.css
+      dest: /var/www/html/index.css
+
+   - name: move html folder
+     copy:
+      src: ./html/
+      dest: /var/www/html/
+# ########################################## FTP ####################################################################################3
+
+   - name: install vsftpd
+     become: true
+     apt:
+       name: vsftpd                   # Instala o servidor de ftp
+       state: present
+    
+   - name: start service
+     become: true
+     ansible.builtin.systemd:         # Módulo que controla os serviços do sistema
+       enabled: yes                   # Habilita o serviço
+       state: started                 # Define o estato do serviço como Started
+       name: vsftpd                   # Nome do serviço a ser manipulado
+
+   - name: move config file          
+     become: true
+     copy:
+       src: ./vsftpd.conf            
+       dest: /etc/vsftpd.conf        # Move a file de configuração para o servidor
+    
+   - name: create a login user
+     become: true
+     user:                            # Cria um usuário local com senha criptografada
+       name: teste
+       password: "$6$vOBO1TyfSTrtR$zq9vCB2EsfOWs0pIo4hhsbEO1DlfGhVWNu7ZSoWcfX3ntvZ6YfzHRBgMaPDmhqWa07jNg2IQRUcKy7tAEim5G0"
+
+   - name: Restart service
+     become: true
+     ansible.builtin.systemd:
+       state: restarted                   # Reinicia o serviço para aplicar as alterações
+       daemon_reload: yes
+       name: vsftpd
+
+################################################### Postfix #######################################################################
+
+   - name: install postfix               # função para instalar o servidor de emails postfix
+     become: true
+     apt:
+      name: postfix                     # nome do pacote a ser instalado
+      state: present                    # estado requerido do pacote
+
+   - name: instala o mailutils           # função para instalar o mailutils (utilidades para email)
+     become: true
+     apt:
+       name: mailutils
+       state: present
+
+   - name: starta o servico do postfix
+     become: true
+     command: systemctl start postfix
+
+   - name: instala o mutt                # função para instalar o mail client mutt
+     become: true
+     apt:
+       name: mutt
+       state: present
+
+#################################################### UFW #################################################################
+
+   - name: ufw allow ssh
+     become: true
+     command: ufw allow ssh
+   
+   - name: ufw allow tcp
+     become: true
+     command: ufw allow 22/tcp
+
+   - name: ufw allow port 21
+     become: true
+     command: ufw allow 21
+
+   - name: ufw deny connection from ip
+     become: true
+     command: ufw deny from 203.0.113.4
+
+  #  - name: enable ufw
+  #    become: true
+  #    command: ufw enable
+
+#################################################### PROXY #################################################################
+
+   - name: install squid for proxy
+     become: true
+     apt:
+      name: squid3
+      state: present
+
+   - name: move squid config
+     copy:                             
+      src: ./proxy/squid.conf        
+      dest: /etc/squid/squid.conf
+      mode: '0644'
+      owner: 'root'
+      group: 'root'
+
+   - name: move blocked sites list
+     copy:                             
+      src: ./proxy/denyWebsites.lst
+      dest: /etc/squid/denyWebsites.lst
+      mode: '0644'
+      owner: 'root'
+      group: 'root'      
+
+   - name: Restart squid service
+     service:
+       state: restarted                   # Reinicia o serviço para aplicar as alterações
+       name: squid
+
+#################################################### BANCO DE DADOS #################################################################
+
+   - name: install sql server
+     become: true
+     apt:
+      name: mysql-server
+      state: present
+
+  #  - name: install php
+  #    become: true
+  #    apt:
+  #     name: php
+  #     state: present
+
+#################################################### SAMBA #################################################################
+
+   #RUN APT INSTALL SAMBA
+   - name: install samba
+      #ACTION
+     apt:
+       name: ['samba']
+       state: latest
+    #CREATE SHARED DIRECTORY
+   - name: create shared directory
+     #ACTION
+     file:
+       path: /home/vagrant/samba/
+       state: directory
+       mode: '0775'
+       owner: "vagrant"
+       group: "vagrant"
+    #PUT  arquivoImportante.txt INSIDE THE SHARED DIRECTORY
+   - name: send arquivoImportante.txt
+     copy:
+       src: ./samba/arquivoImportante.txt
+       dest: /home/vagrant/samba/
+       mode: '0766'
+       owner: "vagrant"
+       group: "vagrant"
+   #ADD SHARED DIRECTORY TO THE SAMBA CONFIG
+   - name: add shared directory config
+     #ACTION
+     blockinfile:
+       path:  /etc/samba/smb.conf
+       insertafter: EOF
+       block: |
+         [samba]
+           comment = Samba on Ubuntu
+           path = /home/vagrant/samba
+           read only = yes
+           browsable = yes
+     notify: Reload Samba
+   #DEFINE SAMBA USER
+   - name: set Samba passwords for each user
+     #ACTION
+     shell: "printf '123\n123\n' | smbpasswd -a vagrant"
+
+  handlers:
+    #RESTART SAMBA SERVICE
+   - name: Reload Samba
+     service:
+       name: smbd
+       state: restarted
+
+   
