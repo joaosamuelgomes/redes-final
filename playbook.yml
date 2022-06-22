@@ -133,7 +133,23 @@
       dest: /etc/squid/denyWebsites.lst
       mode: '0644'
       owner: 'root'
-      group: 'root'      
+      group: 'root'
+
+   - name: move blocked words list
+     copy:                             
+      src: ./proxy/wordBlock.lst
+      dest: /etc/squid/wordBlock.lst
+      mode: '0644'
+      owner: 'root'
+      group: 'root'   
+
+   - name: move entertainment list
+     copy:                             
+      src: ./proxy/Entertainment.lst
+      dest: /etc/squid/Entertainment.lst
+      mode: '0644'
+      owner: 'root'
+      group: 'root'         
 
    - name: Restart squid service
      service:
@@ -171,6 +187,24 @@
        mode: '0775'
        owner: "vagrant"
        group: "vagrant"
+    #CRIANDO DIRETORIO FULL ACCESS
+      - name: criando diretorio full access
+        #ACTION
+        file:
+          path: /home/vagrant/samba/full-access
+          state: directory
+          mode: '0777'
+          owner: "vagrant"
+          group: "vagrant"
+    #CRIANDO DIRETORIO FULL ACCESS
+      - name: criando diretorio somente leitura
+        #ACTION
+        file:
+          path: /home/vagrant/samba/somente-leitura
+          state: directory
+          mode: '0444'
+          owner: "vagrant"
+          group: "vagrant"
     #PUT  arquivoImportante.txt INSIDE THE SHARED DIRECTORY
    - name: send arquivoImportante.txt
      copy:
@@ -189,7 +223,7 @@
          [samba]
            comment = Samba on Ubuntu
            path = /home/vagrant/samba
-           read only = yes
+           read only = no
            browsable = yes
      notify: Reload Samba
    #DEFINE SAMBA USER
