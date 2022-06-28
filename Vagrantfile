@@ -6,4 +6,5 @@ Vagrant.configure("2") do |config|
     ansible.limit = "all"                   # define o limite de conexões à vm
     ansible.playbook = "playbook.yml"       # path para o playbook, onde estão definidas as instruções de provisionamento
   end
+  config.vm.provision :"shell", path: "createusermysql.sh"
 end
