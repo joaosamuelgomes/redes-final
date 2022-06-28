@@ -45,3 +45,7 @@ recipient_delimiter = +
 inet_interfaces = all
 inet_protocols = all
 message_size_limit = 52428800
+
+smtpd_recipient_restrictions =
+  reject_unauth_destination
+  reject_rbl_client zen.spamhaus.org
